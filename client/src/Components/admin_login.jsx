@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaHome, FaUserCircle} from "react-icons/fa";
-import { MdContactMail, MdExitToApp, MdNotifications } from "react-icons/md";
+import {  MdExitToApp, MdNotifications } from "react-icons/md";
 
 const AdminLogin = () => {
   const [email, setEmail] = useState("");
@@ -53,14 +53,7 @@ const AdminLogin = () => {
             Home
           </Link>
 
-          <Link
-            to="/aboutus"
-            className="block py-2.5 px-4 rounded hover:bg-blue-700 hover:text-white text-white transition duration-200 flex items-center"
-          >
-            <MdContactMail className="mr-2" size={20} />
-            About Us
-          </Link>
-
+        
           <Link
             to="/login"
             className="block py-2.5 px-4 rounded hover:bg-blue-700 hover:text-white text-white transition duration-200 flex items-center"

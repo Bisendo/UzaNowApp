@@ -61,7 +61,7 @@ const Dashboard = () => {
           </Link>
 
           <Link
-            to="/seller_login"
+            to="/seller|login"
             className="block py-2.5 px-4 rounded-lg hover:bg-blue-800 transition text-white flex items-center"
           >
             <FaStore size={20} className="mr-2" />
@@ -128,8 +128,9 @@ const Dashboard = () => {
   <div className="ml-auto flex items-center space-x-4">
 
     <MdNotifications size={24} className="text-white cursor-pointer" />
-    {user_name.map((value,key)=>{ return <div>{value.username}</div> })}
     <FaUserCircle size={24} className="text-white cursor-pointer" />
+    {user_name.map((value,key)=>{ return <div></div> })}
+
  
   </div>
 </header>

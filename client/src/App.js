@@ -16,7 +16,10 @@ import UsersPage from "./Components/Users";
 import OrdersPage from "./Components/Orders";
 import ForgotPassword from "./Components/ForgetPassword";
 import ResetPassword from "./Components/SetNewPassword";
-
+import UpdateServiceForm from "./Components/CreateProducts";
+import SellerDashboard from "./Components/sellerDashboard";
+import ManageProducts from "./Components/ManageProducts";
+import SellerMessage from "./Components/SellersMessage";
 
 function App() {
   return (
@@ -37,8 +40,15 @@ function App() {
         
         {/* Seller Routes */}
         <Route path="/seller_register" element={<SellerRegister />} />
-        <Route path="/seller_login" element={<SellerLoginForm />} />
+        <Route path="/seller|login" element={<SellerLoginForm />} />
         <Route path="/sellers" element={<SellersPage />} />
+        <Route path="/seller/dashboard" element={<SellerDashboard />} />
+        <Route path="/seller/messages" element={<SellerMessage />} />
+
+
+        <Route path="/seller/manage-products" element={<ManageProducts />} />
+
+
         
         {/* Admin Routes */}
         <Route path="/admin" element={<Admin />} />
@@ -47,9 +57,13 @@ function App() {
         {/* Product & Order Routes */}
         <Route path="/products" element={<ProductPage />} />
         <Route path="/orders" element={<OrdersPage />} />
+        <Route path="/create-product" element={<UpdateServiceForm />} />
+
+        
         
         {/* User Management */}
         <Route path="/users" element={<UsersPage />} />
+
 
          {/*FORGET PASSWORD*/}
         <Route path="/forgot-password" element={<ForgotPassword/>} />

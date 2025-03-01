@@ -1,22 +1,70 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { FaHome, FaUserCircle, FaStore, FaArrowUp, FaSearch, FaBars } from "react-icons/fa";
-import { MdContactMail, MdExitToApp, MdDashboard, MdNotifications } from "react-icons/md";
-import serviceImage from "../images/image8.jpg";
+import {
+  FaHome,
+  FaUserCircle,
+  FaSearch,
+  FaBars,
+  FaShoppingCart,
+} from "react-icons/fa";
+import { MdContactMail, MdExitToApp, MdNotifications } from "react-icons/md";
+import axios from "axios";
 
 const ServicePage = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [products, setProducts] = useState([]);
+  const [username, setUsername] = useState("");
+  const [cart, setCart] = useState([]); // Cart state for storing items
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
+  // Toggle sidebar visibility
+  const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
+
+  // Add product to the cart
+  const handleAddToCart = (product) => {
+    setCart((prevCart) => [...prevCart, product]);
   };
 
-  const handleScrollToTop = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
-  };
+  // Fetch user details and products on initial render
+  useEffect(() => {
+    // Check if user data exists in localStorage
+    const savedUsername = localStorage.getItem("username");
+
+    if (savedUsername) {
+      setUsername(savedUsername);
+      setIsLoggedIn(true); // User is logged in
+    } else {
+      setIsLoggedIn(false); // User is not logged in
+    }
+
+    // Fetch products from the server
+    const fetchProducts = async () => {
+      try {
+        const response = await axios.get("http://localhost:4001/products");
+        setProducts(response.data);
+      } catch (error) {
+        console.error("Error fetching products:", error.response ? error.response.data : error.message);
+      }
+    };
+
+    fetchProducts();
+  }, []); // Fetch products only once on mount
+
+  if (!isLoggedIn) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="text-center">
+          <h2 className="text-2xl font-semibold">Please login to access services</h2>
+          <Link
+            to="/login"
+            className="mt-4 inline-block bg-blue-600 text-white px-6 py-2 rounded-lg"
+          >
+            Login
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col md:flex-row min-h-screen bg-gray-50">
@@ -38,29 +86,22 @@ const ServicePage = () => {
             Home
           </Link>
           <Link
-            to="/seller_login"
-            className="block py-2.5 px-4 rounded hover:bg-blue-700 hover:text-white transition text-white duration-200 flex items-center"
+            to="/manage-product"
+            className="block py-2.5 px-4 rounded hover:bg-blue-700 text-white transition duration-200 flex items-center"
           >
-            <FaStore size={20} className="mr-2" />
-            Seller
+            <FaHome size={20} className="mr-2" />
+            Seller Management
           </Link>
           <Link
             to="/aboutus"
-            className="block py-2.5 px-4 rounded hover:bg-blue-700 hover:text-white text-white transition duration-200 flex items-center"
+            className="block py-2.5 px-4 rounded hover:bg-blue-700 text-white transition duration-200 flex items-center"
           >
             <MdContactMail className="mr-2" size={20} />
             About Us
           </Link>
           <Link
-            to="/dashboard"
-            className="block py-2.5 px-4 rounded hover:bg-blue-700 hover:text-white text-white transition duration-200 flex items-center"
-          >
-            <MdDashboard className="mr-2" size={20} />
-            Dashboard
-          </Link>
-          <Link
             to="/login"
-            className="block py-2.5 px-4 rounded hover:bg-blue-700 hover:text-white text-white transition duration-200 flex items-center"
+            className="block py-2.5 px-4 rounded hover:bg-blue-700 text-white transition duration-200 flex items-center"
           >
             <MdExitToApp className="mr-2" size={20} />
             Logout
@@ -95,62 +136,77 @@ const ServicePage = () => {
           <div className="flex items-center space-x-4">
             <MdNotifications size={24} className="text-white cursor-pointer" />
             <FaUserCircle size={24} className="text-white cursor-pointer" />
+
+            {/* Cart Icon with item count */}
+            <div className="relative">
+              <FaShoppingCart size={24} className="text-white cursor-pointer" />
+              {cart.length > 0 && (
+                <span className="absolute top-0 right-0 bg-red-500 text-white text-xs font-bold rounded-full px-2 py-1">
+                  {cart.length}
+                </span>
+              )}
+            </div>
           </div>
         </header>
 
         {/* Content */}
         <div className="p-4 sm:p-6 bg-white">
+          <div className="text-lg font-semibold mb-4">
+            Welcome, {username || "User"}! {/* Display the username */}
+          </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {/* Card Components */}
-            {[...Array(8)].map((_, index) => (
-              <div key={index} className="bg-white p-4 rounded-lg shadow-lg hover:shadow-2xl transition-shadow duration-300">
-                <div className="w-full overflow-hidden rounded-t-lg">
-                  <img
-                    src={serviceImage}
-                    alt="Service"
-                    className="w-full h-48 object-cover rounded-lg shadow-md"
-                  />
-                </div>
-                <div className="mt-4">
-                  <p className="text-black font-bold text-center">Bag</p>
-                  <p className="text-black font-semibold text-center">
-                    Quantity: <span className="font-bold text-blue-700">12</span>
-                  </p>
-                  <p className="text-black font-semibold text-center">
-                    Phone Number: <br />
-                    <span className="text-blue-700">+255 655 344 222</span>
-                  </p>
-                  <p className="text-gray-600 font-semibold text-center">
-                    Tsh 12000/=
-                  </p>
-                  <div className="flex justify-center mt-4">
-                    <button className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition duration-300">
-                      Add
-                    </button>
+            {/* Map through fetched products and display them */}
+            {products.length > 0 ? (
+              products.map((product) => (
+                <div
+                  key={product.id}
+                  className="bg-white p-4 rounded-lg shadow-lg hover:shadow-2xl transition-shadow duration-300"
+                >
+                  <div className="w-full overflow-hidden rounded-t-lg">
+                    <img
+                      src={`http://localhost:4001/uploads/${
+                        product.image || "default-image.jpg"
+                      }`}
+                      alt={product.name}
+                      className="w-full h-48 object-cover rounded-lg shadow-md"
+                    />
+                  </div>
+                  <div className="mt-4">
+                    <p className="text-black font-bold text-center">
+                      {product.name}
+                    </p>
+                    <p className="text-black font-semibold text-center">
+                      Quantity:{" "}
+                      <span className="font-bold text-blue-700">
+                        {product.quantity}
+                      </span>
+                    </p>
+                    <p className="text-black font-semibold text-center">
+                      Phone Number: <br />
+                      <span className="text-blue-700">
+                        {product.phoneNumber}
+                      </span>
+                    </p>
+                    <p className="text-gray-600 font-semibold text-center">
+                      Tsh {product.price}/=
+                    </p>
+                    <div className="flex justify-center mt-4">
+                      <button
+                        onClick={() => handleAddToCart(product)}
+                        className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition duration-300"
+                      >
+                        Add <FaShoppingCart size={16} className="inline ml-2" />
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))
+            ) : (
+              <div>No products available.</div>
+            )}
           </div>
         </div>
-
-        {/* Scroll to Top Button */}
-        <button
-          onClick={handleScrollToTop}
-          className="fixed bottom-4 right-4 bg-blue-600 text-white p-3 rounded-full shadow-lg hover:bg-blue-700 transition duration-300"
-          aria-label="Scroll to top"
-        >
-          <FaArrowUp size={20} />
-        </button>
       </main>
-
-      {/* Overlay for Sidebar (Mobile Only) */}
-      {isSidebarOpen && (
-        <div
-          onClick={toggleSidebar}
-          className="fixed inset-0 bg-black bg-opacity-50 z-10 md:hidden"
-        ></div>
-      )}
     </div>
   );
 };
